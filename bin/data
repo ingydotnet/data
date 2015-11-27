@@ -1,0 +1,83 @@
+#!/usr/bin/env perl
+
+use strict;
+use FindBin;
+use Pegex::Parser;
+use Pegex::Grammar;
+use IO::All;
+use XXX;
+
+sub main {
+    my $grammar_text = io("$FindBin::Bin/../share/ifconfig.pgx")->all;
+    my $input = io('-')->all;
+
+    my $grammar = Pegex::Grammar->new(text => $grammar_text);
+    my $receiver = Ifconfig->new;
+    my $parser = Pegex::Parser->new(
+        grammar => $grammar,
+        receiver => $receiver,
+        # debug => 1,
+    );
+
+    # XXX $grammar->tree->{hwaddr};
+
+    XXX $parser->parse($input);
+}
+
+package Ifconfig;
+use base 'Pegex::Tree';
+use XXX;
+
+sub initial {
+    my ($self) = @_;
+    $self->{data} = {};
+}
+
+sub final {
+    my ($self) = @_;
+    return $self->{data};
+}
+
+sub got_device_section {
+    my ($self, $got) = @_;
+    my ($name, $section) = @$got;
+    $section = $self->flatten($section);
+    my %hash = map %$_, @$section;
+    $self->{data}{$name} = \%hash;
+}
+
+sub got_inet_addr {
+    my ($self, $got) = @_;
+    +{ 'IP Address' => $got };
+}
+
+sub got_inet6_addr {
+    my ($self, $got) = @_;
+    +{ 'IP6 Address' => $got };
+}
+
+sub got_bcast {
+    my ($self, $got) = @_;
+    +{ 'Broadcast' => $got };
+}
+
+sub got_mask {
+    my ($self, $got) = @_;
+    +{ 'IP Mask' => $got };
+}
+
+sub got_link_encap {
+    my ($self, $got) = @_;
+    +{ 'Link Encap' => $got };
+}
+
+sub got_hwaddr {
+    my ($self, $got) = @_;
+    +{ 'Hardware Address' => $got };
+}
+
+
+sub got_other {}
+
+package main;
+main @ARGV;

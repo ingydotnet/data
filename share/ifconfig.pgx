@@ -1,0 +1,29 @@
+ifconfig: device-section* %% blank_line
+
+device-section: device-name device-line+
+
+device-name: /( WORD+ )/
+
+device-line: / SPACE+ / device-info+ %% / SPACE+ / EOL
+
+device-info:
+| link-encap
+| hwaddr
+| inet-addr
+| bcast
+| mask
+| inet6-addr
+| other
+
+link-encap: / 'Link encap:' ( NS+ ) /
+
+hwaddr: / 'HWaddr' + ( HEX{2} (: ':' (: HEX{2}) ){5} ) /
+
+inet-addr: / 'inet addr:' ( NS+ )/
+inet6-addr: / 'inet6 addr:' + ( NS+ )/
+bcast: / 'Bcast:' ( NS+ )/
+mask: / 'Mask:' ( NS+ )/
+
+other: /( NS+ )/
+
+blank-line: EOL
