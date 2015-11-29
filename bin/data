@@ -5,9 +5,18 @@ use FindBin;
 use Pegex::Parser;
 use Pegex::Grammar;
 use IO::All;
+use YAML::XS qw/ Dump /;
+use Getopt::Long;
 use XXX;
 
 sub main {
+    my @args = @_;
+    GetOptions(
+        "from=s" => \my $from,
+        "yaml" => \my $output_yaml,
+        "path=s" => \my $path,
+    );
+
     my $grammar_text = io("$FindBin::Bin/../share/ifconfig.pgx")->all;
     my $input = io('-')->all;
 
@@ -21,7 +30,29 @@ sub main {
 
     # XXX $grammar->tree->{hwaddr};
 
-    XXX $parser->parse($input);
+#    XXX $parser->parse($input);
+    my $data = $parser->parse($input);
+    if (defined $path and length $path) {
+        while (length $path) {
+            if ($path =~ s/^\[(\d+)\]//) {
+                my $index = $1;
+                $path =~ s{^/}{};
+                $data = $data->[ $index ];
+            }
+            elsif ( $path =~ s{^ ([^/\[]+ ) }{}x ) {
+                my $key = $1;
+                $path =~ s{^/}{};
+                $data = $data->{ $key };
+            }
+            else {
+                $data = $data->{ $path };
+                last;
+            }
+        }
+    }
+
+    my $output = ref $data ? Dump $data : $data;
+    print $output . "\n";
 }
 
 package Ifconfig;
