@@ -31,7 +31,7 @@ rx-keys: / ( WORD+ ) ':' ( NS+ ) /
 tx-keys: / ( WORD+ ) ':' ( NS+ ) /
 #rx-keys: / ( 'errors|dropped|overruns|frame' ) ':' ( NS+ ) /
 #tx-keys: / ( '(errors|dropped|overruns|carrier)' ) ':' ( NS+ ) /
-link-encap: / 'Link encap:' ( NS+ ) /
+link-encap: / 'Link encap:' ( NS+ (: ' ' NS+)* ) ' ' /
 
 hwaddr: / 'HWaddr' + ( HEX{2} (: ':' (: HEX{2}) ){5} ) /
 
