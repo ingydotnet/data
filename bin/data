@@ -66,6 +66,41 @@ sub got_mask {
     +{ 'IP Mask' => $got };
 }
 
+sub got_scope {
+    my ($self, $got) = @_;
+    +{ 'Scope' => $got };
+}
+
+sub got_mtu {
+    my ($self, $got) = @_;
+    +{ 'MTU' => $got };
+}
+
+sub got_metric {
+    my ($self, $got) = @_;
+    +{ 'Metric' => $got };
+}
+
+sub got_collisions {
+    my ($self, $got) = @_;
+    +{ 'Collisions' => $got };
+}
+
+sub got_txqueuelen {
+    my ($self, $got) = @_;
+    +{ 'TX Queue Length' => $got };
+}
+
+sub got_rx_bytes {
+    my ($self, $got) = @_;
+    +{ 'RX Bytes' => $got };
+}
+
+sub got_tx_bytes {
+    my ($self, $got) = @_;
+    +{ 'TX Bytes' => $got };
+}
+
 sub got_link_encap {
     my ($self, $got) = @_;
     +{ 'Link Encap' => $got };
@@ -74,6 +109,63 @@ sub got_link_encap {
 sub got_hwaddr {
     my ($self, $got) = @_;
     +{ 'Hardware Address' => $got };
+}
+
+sub got_flags {
+    my ($self, $got) = @_;
+    +{ map { $_ => 1 }  split ' ', $got };
+}
+
+sub got_rx {
+    my ($self, $got) = @_;
+    my %hash = map { %$_ } @{ $got ->[0]};
+    +{ 'RX' => \%hash };
+}
+
+sub got_rx_keys {
+    my ($self, $got) = @_;
+    +{ @$got };
+}
+
+sub got_tx {
+    my ($self, $got) = @_;
+    my %hash = map { %$_ } @{ $got ->[0]};
+    +{ 'TX' => \%hash };
+}
+
+sub got_tx_keys {
+    my ($self, $got) = @_;
+    +{ @$got };
+}
+
+sub got_packets {
+    my ($self, $got) = @_;
+    +{ 'packets' => $got };
+}
+
+sub got_errors {
+    my ($self, $got) = @_;
+    +{ 'errors' => $got };
+}
+
+sub got_dropped {
+    my ($self, $got) = @_;
+    +{ 'dropped' => $got };
+}
+
+sub got_overruns {
+    my ($self, $got) = @_;
+    +{ 'overruns' => $got };
+}
+
+sub got_frame {
+    my ($self, $got) = @_;
+    +{ 'frame' => $got };
+}
+
+sub got_carrier {
+    my ($self, $got) = @_;
+    +{ 'carrier' => $got };
 }
 
 

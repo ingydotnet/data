@@ -13,8 +13,24 @@ device-info:
 | bcast
 | mask
 | inet6-addr
+| scope
+| mtu
+| metric
+| collisions
+| txqueuelen
+| rx-bytes
+| tx-bytes
+| flags
+| rx
+| tx
 | other
 
+rx: / 'RX ' / rx-keys+ %% / SPACE+ /
+tx: / 'TX ' / tx-keys+ %% / SPACE+ /
+rx-keys: / ( WORD+ ) ':' ( NS+ ) /
+tx-keys: / ( WORD+ ) ':' ( NS+ ) /
+#rx-keys: / ( 'errors|dropped|overruns|frame' ) ':' ( NS+ ) /
+#tx-keys: / ( '(errors|dropped|overruns|carrier)' ) ':' ( NS+ ) /
 link-encap: / 'Link encap:' ( NS+ ) /
 
 hwaddr: / 'HWaddr' + ( HEX{2} (: ':' (: HEX{2}) ){5} ) /
@@ -23,6 +39,14 @@ inet-addr: / 'inet addr:' ( NS+ )/
 inet6-addr: / 'inet6 addr:' + ( NS+ )/
 bcast: / 'Bcast:' ( NS+ )/
 mask: / 'Mask:' ( NS+ )/
+scope: / 'Scope:' ( NS+ )/
+mtu: / 'MTU:' ( NS+ )/
+metric: / 'Metric:' ( NS+ )/
+collisions: / 'collisions:' ( NS+ )/
+txqueuelen: / 'txqueuelen:' ( NS+ )/
+rx-bytes: / 'RX bytes:' ( NS+ ' (' NS+ ' ' NS+ ')')/
+tx-bytes: / 'TX bytes:' ( NS+ ' (' NS+ ' ' NS+ ')')/
+flags: / ( WORD+ (: ' ' WORD+ )+ ) ' ' /
 
 other: /( NS+ )/
 
