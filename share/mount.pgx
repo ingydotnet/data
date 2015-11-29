@@ -1,0 +1,17 @@
+mount: mount-entry* %% NL
+
+mount-entry: mount-name / ' on ' / mount-point / ' type ' / fs-type / ' (' / mount-options / ')' /
+mount-name: / ( NS+ ) /
+mount-point: / ( NS+ ) /
+fs-type: / ( NS+ ) /
+mount-options: mount-option* % COMMA
+mount-option: / ( NS+ ) /
+
+#ifconfig: device-section* %% blank_line
+#rx: / 'RX ' / rx-keys+ %% / SPACE+ /
+#tx: / 'TX ' / tx-keys+ %% / SPACE+ /
+#rx-keys: / ( WORD+ ) ':' ( NS+ ) /
+#tx-keys: / ( WORD+ ) ':' ( NS+ ) /
+#link-encap: / 'Link encap:' ( NS+ (: ' ' NS+)* ) ' ' /
+#hwaddr: / 'HWaddr' + ( HEX{2} (: ':' (: HEX{2}) ){5} ) /
+

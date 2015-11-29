@@ -17,15 +17,22 @@ sub main {
         "path=s" => \my $path,
     );
 
-    my $grammar_text = io("$FindBin::Bin/../share/ifconfig.pgx")->all;
+    my ($grammar_text, $receiver);
+    if ($from eq "ifconfig") {
+        $grammar_text = io("$FindBin::Bin/../share/ifconfig.pgx")->all;
+        $receiver = Ifconfig->new;
+    }
+    elsif ($from eq "mount") {
+        $grammar_text = io("$FindBin::Bin/../share/mount.pgx")->all;
+        $receiver = Mount->new;
+    }
     my $input = io('-')->all;
 
     my $grammar = Pegex::Grammar->new(text => $grammar_text);
-    my $receiver = Ifconfig->new;
     my $parser = Pegex::Parser->new(
         grammar => $grammar,
         receiver => $receiver,
-        # debug => 1,
+        debug => 1,
     );
 
     # XXX $grammar->tree->{hwaddr};
@@ -55,9 +62,8 @@ sub main {
     print $output . "\n";
 }
 
-package Ifconfig;
+package Data;
 use base 'Pegex::Tree';
-use XXX;
 
 sub initial {
     my ($self) = @_;
@@ -68,6 +74,44 @@ sub final {
     my ($self) = @_;
     return $self->{data};
 }
+
+package Mount;
+use base 'Data';
+use XXX;
+
+sub got_mount_options {
+    my ($self, $got) = @_;
+    +{ 'Options' => $got };
+}
+
+sub got_mount_point {
+    my ($self, $got) = @_;
+    +{ 'Mount Point' => $got };
+}
+
+sub got_mount_name {
+    my ($self, $got) = @_;
+    +{ 'Mount Name' => $got };
+}
+
+sub got_fs_type {
+    my ($self, $got) = @_;
+    +{ 'FS Type' => $got };
+}
+
+sub got_mount_entry {
+    my ($self, $got) = @_;
+    my (@data) = @$got;
+    my %hash = map %$_, @data;
+    my $name = delete $hash{"Mount Point"};
+    $self->{data}{$name} = \%hash;
+}
+
+
+package Ifconfig;
+use base 'Data';
+use XXX;
+
 
 sub got_device_section {
     my ($self, $got) = @_;
